@@ -1,0 +1,30 @@
+{
+  "name": "room-core-tablet",
+  "description": "",
+  "dependencies": {
+    "angular": "~1.4.3",
+    "angular-resource": "1.4.3",
+    "angular-ui-router": "0.2.15",
+    "jquery": "~2.1.4",
+    "restangular": "1.5.1",
+    "underscore": "1.8.3",
+    "bootstrap": "3.3.5",
+    "font-awesome": "4.3.0",
+    "flow.js": "~2.9.0",
+    "angular-bootstrap": "0.13.2",
+    "sockjs-client": "1.0.3",
+    "stomp-websocket": "2.3.4",
+    "angular-route": "1.4.3",
+    "angular-mocks": "1.4.3",
+    "flow.js": "~2.9.0",
+    "angular-bootstrap": "0.13.3",
+    "moment": "~2.10.6",
+    "interact": "1.2.4",
+    "angular-bootstrap-calendar": "0.14.6",
+    "angular-touch": "1.4.3",
+    "angular-animate": "1.4.3",
+    "bootstrap-ui-datetime-picker": "1.1.7",
+    "pdfmake": "0.1.17"
+
+  }
+}
