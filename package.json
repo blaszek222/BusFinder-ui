@@ -1,0 +1,10 @@
+{
+  "engines": {
+    "node": "0.12.x"
+  },
+  "name": "room-core-tablet",
+  "repository": "https://github.com/blaszek222/BusFinder-ui",
+  "dependencies": {
+    "bower": "^1.4.0"
+  }
+}
