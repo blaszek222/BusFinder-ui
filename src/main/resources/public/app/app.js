@@ -10,8 +10,8 @@ busFinderApp.config(function (RestangularProvider) {
     RestangularProvider.setBaseUrl("http://localhost:8081");
 
     RestangularProvider.setDefaultHeaders(
-            {"Accept": 'application/json'},
-    {"Content-Type": "application/json+hal"}
+        {"Accept": 'application/json'},
+        {"Content-Type": "application/json+hal"}
     );
     
     RestangularProvider.setResponseInterceptor(function (data, operation, what) {

@@ -46,7 +46,21 @@
             </div>
         </div>-->
         <div ng-controller="BusStopController">
-            {{busStops}}
+            All Bus Stops
+            <table width="20%" class="table-hover">
+                <tr>
+                    <td>
+                        Id
+                    </td>
+                    <td>
+                        Name
+                    </td>
+                </tr>
+                <tr ng-repeat= "busStop in busStops">
+                    <td>{{busStop.id}}</td>
+                    <td>{{busStop.name}}</td>
+                </tr>
+            </table>
         </div>
     </body>
 </html>
