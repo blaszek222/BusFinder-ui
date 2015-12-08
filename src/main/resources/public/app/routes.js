@@ -1,19 +1,12 @@
-//var routerSokClientApp = angular.module('sokClientApp');
-//
-//routerSokClientApp.config(function ($stateProvider, $urlRouterProvider) {
-//    $urlRouterProvider.otherwise('/dashboard');
-//    $stateProvider
-//            .state('dashboard', {
-//                url: '/dashboard',
-//                views: {
-//                    'navigation': {
-//                        templateUrl: 'app/partials/navigation.tpl.html'
-//                    },
-//                    'content': {
-//                        templateUrl: 'app/partials/dashboard/dashboard.tpl.html'
-//                    }
-//                }
-//            })
+var routerBusFinderApp = angular.module('busFinderApp');
+
+routerBusFinderApp.config(function ($stateProvider, $urlRouterProvider) {
+    $urlRouterProvider.otherwise('/dashboard');
+    $stateProvider
+            .state('dashboard', {
+                url: '/dashboard',
+                urrl: 'app/index.html'
+            })
 //            .state('manageOffice', {
 //                url: '/manageOffice',
 //                views: {
@@ -80,4 +73,4 @@
 //                    }
 //                }
 //            })
-//});
+});

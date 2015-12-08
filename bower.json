@@ -35,6 +35,9 @@
     "moment": "~2.10.6",
     "interact": "1.2.4",
     "angular-touch": "1.4.3",
-    "angular-animate": "1.4.3"
+    "angular-animate": "1.4.3",
+    "mapbox.js": "2.2.3",
+    "google-maps": "3.0.0",
+    "ngmap": "1.14.15"
   }
 }

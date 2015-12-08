@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="">
+        <meta name="author" content="">
+
+        <title>SmartOffice Kielce</title>
+        <link href="../bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+<!--        <link href="../bower_components/angular-drag-and-drop-lists/demo/framework/demo-framework.css" rel="stylesheet">
+        <link href="../bower_components/angular-drag-and-drop-lists/demo/advanced/advanced.css" rel="stylesheet">
+        <link href="../bower_components/angular-drag-and-drop-lists/demo/framework/vendor/bootstrap-theme.min.css" rel="stylesheet">
+        <link href="../bower_components/angular-drag-and-drop-lists/demo/framework/vendor/prism.css" rel="stylesheet">-->
+<!--        <link href="assets/css/custom.css" rel="stylesheet">-->
+        <link href="../bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+        <!--<link href="../bower_components/mapbox.js/mapbox.css" rel="stylesheet">-->
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDyRgPiByl7TbVvqG_UxUJv8jDjg3xMe1M&signed_in=true"></script>
+        <script src="../bower_components/angular/angular.min.js"></script>
+        <script src="../bower_components/jquery/dist/jquery.min.js"></script>
+<!--        <script src="../bower_components/angular-drag-and-drop-lists/angular-drag-and-drop-lists.min.js"></script>-->
+        <script src="../bower_components/angular-resource/angular-resource.min.js"></script>
+        <script src="../bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
+        <script src="../bower_components/angular-route/angular-route.min.js"></script>
+        <script src="../bower_components/bootstrap/dist/js/bootstrap.js"></script>
+        <script src="../bower_components/lodash/lodash.min.js"></script>
+        <script src="../bower_components/restangular/dist/restangular.min.js"></script>
+        <!--<script src="../bower_components/mapbox.js/mapbox.js"></script>-->    
+        <script src="../bower_components/google-maps/lib/Google.js"></script>    
+        
+        <script src="app/app.js"></script>
+        <script src="app/routes.js"></script>        
+        <script src="app/js/services.js"></script>
+<!--        <script src="app/js/linksExtractor.js"></script>-->
+        <script src="app/js/controllers.js"></script>
+        
+<!--        <script src="app/shared/filters.js"></script>
+        <script src="app/js/directives.js"></script>
+        <script src="app/shared/components/project/project-list.directive.js"></script>
+        <script src="app/shared/components/people/people-list.directive.js"></script>-->
+
+
+<style>
+
+#sidebar {
+  position:absolute;
+  height:33.3333%;
+  width:100%;
+  top:0;left:0;
+  border-bottom:1px solid rgba(0,0,0,0.25);
+  overflow:scroll;
+}
+#map {
+  position:absolute;
+  top:33.3333%;
+  width:100%;
+  bottom:0;
+}
+
+</style>
+
+
+    </head>
+    <body ng-app="busFinderApp">
+<!--        <div id="wrapper">
+            <div ui-view="navigation"></div>
+
+            <div class="container">
+                <div ui-view="content"></div>
+            </div>
+        </div>-->
+    <div ng-controller="MapController">
+
+
+        <div id="sidebar">
+        <div class="container">
+        
+        <select class="form-control input-sm" ng-options="busLine.id as busLine.number for busLine in busLines" ng-model="filterDef">
+            <option value="" disabled selected style="display: none;"> Wybierz linie z listy</option>
+        </select> <br/>
+        
+          <h2>Bus Stops</h2> 
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Latitide</th>
+                <th>Longitude</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr  ng-repeat= "busStop in busStops">
+                <td>{{busStop.id}}</td>
+                <td>{{busStop.name}}</td>
+                <td>{{busStop.latitude}}</td>
+                <td>{{busStop.longitude}}</td> 
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <br>
+
+        <div class="container">
+          <h2>Bus Stop Connections</h2> 
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Id</th>
+                <th>Distance</th>
+                <th>Bus Stop From</th>
+                <th>Bus Stop To</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr  ng-repeat= "busStopConnection in busStopConnections">
+                <td>{{busStopConnection.id}}</td>
+                <td>{{busStopConnection.distance}}</td>
+                <td>{{busStopConnection.busStopFrom.name}} {{busStopConnection.busStopFrom.latitude}}</td>
+                <td>{{busStopConnection.busStopTo.name}} {{busStopConnection.busStopFrom.longitude}}</td> 
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        
+        <br/>
+        
+        <div class="container">
+          <h2>Bus Lines</h2> 
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Bus Stop From</th>
+                <th>Bus Stop To</th>
+                <th>Bus Line Bus Stops</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr  ng-repeat= "busLine in busLines">
+                <td>{{busLine.id}}</td>
+                <td>{{busLine.number}}</td>
+                <td>{{busLine.busStopFrom.name}}</td>
+                <td>{{busLine.busStopTo.name}}</td> 
+                <td><p ng-repeat="busLineBusStop in busLine.busStops">{{busLineBusStop.name}}</p></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>     
+        
+        <div class="container">
+          <h2>Bus Line Connections</h2> 
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Id</th>
+                <th>Bus Line</th>
+                <th>Bus Stop Connection</th>
+                <th>Bus Line Order</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr  ng-repeat= "busLineConnection in busLineConnections">
+                <td>{{busLineConnection.id}}</td>
+                <td>{{busLineConnection.busLine.number}}</td>
+                <td>{{busLineConnection.busStopConnection.busStopFrom.name}} - {{busLineConnection.busStopConnection.busStopTo.name}}</td>
+                <td>{{busLineConnection.busLineOrder}}</td> 
+              </tr>
+            </tbody>
+          </table>
+        </div>  
+        
+        </div>
+
+        <div id='map'>
+            
+        </div>
+
+    </div>
+
+    </body>
+    
+
+  
+    
+</html>
