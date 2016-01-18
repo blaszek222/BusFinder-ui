@@ -1,0 +1,44 @@
+{{vm.travelDirections = null}}
+<form>
+    <h4>Dodaj połączenie miedzy przystankami</h4>
+    <select class="form-control input-sm" ng-options="busStop as busStop.id+' - '+busStop.name for busStop in vm.busStops" ng-model="vm.newBusStopConnection.busStopFrom" ng-required="true">
+        <option value="" disabled selected style="display: none;"> Wybierz przystanek początkowy</option>
+    </select>
+    <select class="form-control input-sm" ng-options="busStop as busStop.id+' - '+busStop.name for busStop in vm.busStops" ng-model="vm.newBusStopConnection.busStopTo" ng-required="true">
+        <option value="" disabled selected style="display: none;"> Wybierz przystanek końcowy</option>
+    </select>
+    <button class="btn btn-primary" ng-click="vm.newBusStopConnection.busStopFrom && vm.newBusStopConnection.busStopTo ? vm.createNewBusStopConnection() : null" >Create Bus Stop Connection</button>                          
+</form>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h4 class="panel-title">
+            <a data-toggle="collapse" data-target="#collapse1"><b>Bus Stop Connections List</b></a>
+        </h4>
+    </div>
+    <div id="collapse1" class="panel-collapse collapse">
+        <div class="container">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Distance</th>
+                        <th>Bus Stop From</th>
+                        <th>Bus Stop To</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr  ng-repeat= "busStopConnection in vm.busStopConnections">
+                        <td>{{busStopConnection.id}}</td>
+                        <td>{{busStopConnection.distance}}</td>
+                        <td>{{busStopConnection.busStopFrom.name}} {{busStopConnection.busStopFrom.latitude}}</td>
+                        <td>{{busStopConnection.busStopTo.name}} {{busStopConnection.busStopFrom.longitude}}</td> 
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+

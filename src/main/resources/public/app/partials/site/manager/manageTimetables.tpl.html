@@ -1,0 +1,52 @@
+{{vm.travelDirections = null}}
+
+<form>
+    <h4>Create Timetable</h4>
+    <select class="form-control input-sm" ng-options="busLine as busLine.id+' - '+busLine.number+' ('+busLine.busStopFrom.name+' --> '+busLine.busStopTo.name+')' for busLine in vm.busLines" ng-model="vm.newTimetable.busLine" ng-required="true">
+        <option value="" disabled selected style="display: none;"> Wybierz linie autobusowa</option>
+    </select> 
+    <select class="form-control input-sm" ng-options="busStop as busStop.id+' - '+busStop.name for busStop in vm.busStops" ng-model="vm.newTimetable.busStop" ng-required="true">
+        <option value="" disabled selected style="display: none;"> Wybierz przystanek początkowy</option>
+    </select>    
+    
+    <input type="number" class="form-control input-sm" ng-model="vm.newTimetable.time_hour" placeholder="Podaj godzine odjazdu z przystanku początkowego" required/>                        
+    <input type="number" class="form-control input-sm" ng-model="vm.newTimetable.time_minute" placeholder="Podaj minute odjazdu z przystanku początkowego" required/>                         
+    <button class="btn btn-primary" ng-click="
+                                            vm.newTimetable.busLine &&
+                                            vm.newTimetable.time_hour &&
+                                            vm.newTimetable.busStop &&
+                                            vm.newTimetable.time_minute ?
+                                            vm.saveNewTimetable() : null" >
+        Save new Timetable
+    </button>                         
+</form>   
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h4 class="panel-title">
+            <a data-toggle="collapse" data-target="#collapse1">Timetable list</a>
+        </h4>
+    </div>
+    <div id="collapse1" class="panel-collapse collapse">
+        <div class="container">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Bus Line</th>
+                        <th>Bus Stop</th>
+                        <th>Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr  ng-repeat="timetable in vm.timetables">
+                        <td>{{timetable.id}}</td>
+                        <td>{{timetable.busLine.number}}</td>
+                        <td>{{timetable.busStop.name}}</td>
+                        <td>{{timetable.time_hour}}:{{timetable.time_minute}}</td> 
+                    </tr>
+                </tbody>
+            </table>
+        </div> 
+    </div>
+</div>

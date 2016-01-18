@@ -248,3 +248,72 @@ services.service('BusLineConnection', ['Restangular', '$q',
         };
     }
 ]);
+
+services.service('Timetable', ['Restangular', '$q',
+    function(Restangular, $q){
+        return {
+            save: function(timetables, timetable){
+                var deferred = $q.defer();
+                console.log(timetable)
+                Restangular.one('busStops', timetable.busStop).get().then(function(responseBusStop){
+                    timetable.busStop = responseBusStop.getRestangularUrl();
+                    Restangular.one('busLines', timetable.busLine).get().then(function(responseBusLine){
+                        timetable.busLine = responseBusLine.getRestangularUrl();
+                        timetables.post(timetable).then(function(responseTimetable){
+                           deferred.resolve(responseTimetable); 
+                        });
+                    });
+                });
+                return deferred.promise; 
+            },            
+            findAll: function(){
+                return Restangular.all('timetables').getList();
+            },
+            _getTimetableBusLine: function (idTimetable) {
+                return Restangular.one('timetables', idTimetable).customGET('busLine');
+            },
+            getTimetableBusLine: function (idTimetable) {
+                return this._getTimetableBusLine(idTimetable).$object;
+            },
+            getTimetableBusLinePromise: function (idTimetable) {
+                var deferred = $q.defer();
+                this._getTimetableBusLine(idTimetable).then(function (response) {
+                    deferred.resolve(response);
+                });
+                return deferred.promise;
+            },   
+            _getTimetableBusStop: function (idTimetable) {
+                return Restangular.one('timetables', idTimetable).customGET('busStop');
+            },
+            getTimetableBusStop: function (idTimetable) {
+                return this._getTimetableBusStop(idTimetable).$object;
+            },
+            getTimetableBusStopPromise: function (idTimetable) {
+                var deferred = $q.defer();
+                this._getTimetableBusStop(idTimetable).then(function (response) {
+                    deferred.resolve(response);
+                });
+                return deferred.promise;
+            }             
+        };
+    }
+]);
+
+services.service('Notifications', [
+    function(){
+        return {
+            showNotification: function(message, type, time){
+                    $.notify(message, {
+                        animate: {
+                                enter: 'animated bounceIn',
+                                exit: 'animated bounceOut'
+                        }
+                        ,
+                        newest_on_top: true,
+                        type: type,
+                        timer: time                
+                    });
+            }           
+        } 
+    }
+]);

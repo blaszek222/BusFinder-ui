@@ -1,0 +1,22 @@
+
+<form ng-init="vm.searchedConnection.searchingType = 'distance'; vm.searchingMode='busStop';">
+    <h4>Wyszukaj połączenie miedzy przystankami</h4>
+    <select class="form-control input-sm" ng-options="busStop as busStop.id+' - '+busStop.name for busStop in vm.busStops" ng-model="vm.searchedConnection.busStopFrom">
+        <option value="" disabled selected style="display: none;"> Wybierz przystanek początkowy</option>
+    </select>
+    <select class="form-control input-sm" ng-options="busStop as busStop.id+' - '+busStop.name for busStop in vm.busStops" ng-model="vm.searchedConnection.busStopTo">
+        <option value="" disabled selected style="display: none;"> Wybierz przystanek końcowy</option>
+    </select>
+
+    <label>
+        <input type="radio" ng-model="vm.searchedConnection.searchingType" value="distance">Najkrótszy dystans
+    </label><br/>
+    <label>
+        <input type="radio" ng-model="vm.searchedConnection.searchingType" value="minimumBusStops" checked="checked">Najmniejsza ilosc przystanków
+    </label><br/>
+    <label>
+        <input type="radio" ng-model="vm.searchedConnection.searchingType" value="directConnection" checked="checked">Połączenie bezpośrednie
+    </label>    <br/> 
+
+    <button class="btn btn-primary" ng-click="vm.searchedConnection.busStopFrom && vm.searchedConnection.busStopTo ? vm.findConnection() : null" >Szukaj polaczenia</button>                         
+</form>  

@@ -8,18 +8,20 @@
         <meta name="author" content="">
 
         <title>Bus Finder</title>
-        <link href="../bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link href="../bower_components/bootstrap/dist/css/bootstrap.css" rel="stylesheet">
         <!--        <link href="../bower_components/angular-drag-and-drop-lists/demo/framework/demo-framework.css" rel="stylesheet">
                 <link href="../bower_components/angular-drag-and-drop-lists/demo/advanced/advanced.css" rel="stylesheet">
                 <link href="../bower_components/angular-drag-and-drop-lists/demo/framework/vendor/bootstrap-theme.min.css" rel="stylesheet">
                 <link href="../bower_components/angular-drag-and-drop-lists/demo/framework/vendor/prism.css" rel="stylesheet">-->
         <!--        <link href="assets/css/custom.css" rel="stylesheet">-->
         <link href="../bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+        <link href="../bower_components/animate/animate.css" rel="stylesheet" type="text/css">
         <!--<link href="../bower_components/mapbox.js/mapbox.css" rel="stylesheet">-->
         <!--<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDyRgPiByl7TbVvqG_UxUJv8jDjg3xMe1M&signed_in=true"></script>-->
         <script type="text/javascript" src="http://maps.google.com/maps/api/js?&v=3&libraries=geometry"></script>
         <script src="../bower_components/angular/angular.min.js"></script>
         <script src="../bower_components/jquery/dist/jquery.min.js"></script>
+        <script src="../bower_components/angular-animate/angular-animate.min.js"></script>        
         <!--        <script src="../bower_components/angular-drag-and-drop-lists/angular-drag-and-drop-lists.min.js"></script>-->
         <script src="../bower_components/angular-resource/angular-resource.min.js"></script>
         <script src="../bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
@@ -30,6 +32,10 @@
         <!--<script src="../bower_components/mapbox.js/mapbox.js"></script>-->    
         <!--<script src="../bower_components/google-maps/lib/Google.js"></script>--> 
         <script src="../bower_components/ngmap/build/scripts/ng-map.js"></script> 
+        <script src="../bower_components/angular-growl-notifications/dist/angular-growl-notifications.js"></script>
+        <script src="../bower_components/notify/notify.js"></script>
+        <script src="../bower_components/remarkable-bootstrap-notify/bootstrap-notify.js"></script>
+
 
         <script src="app/app.js"></script>
         <script src="app/routes.js"></script>        
@@ -41,7 +47,9 @@
                 <script src="app/js/directives.js"></script>
                 <script src="app/shared/components/project/project-list.directive.js"></script>
                 <script src="app/shared/components/people/people-list.directive.js"></script>-->
+        <script>
 
+        </script>
         <style>
             #sidebar {
                 position:absolute;
@@ -52,304 +60,181 @@
                 overflow:scroll;
             }
             .map {
-                position:absolute;
-                top:33.3333%;
-                width:100%;
-                bottom:0;
+                width:100%; 
+                height:600px; 
+                float:left;
+                margin-bottom: 10px;
             }
         </style>
 
     </head>
-    <body >
-
-        <div ng-controller="MapController as vm">
-
-            <div id="sidebar">
-                <div class="container">
-
-                    <form>
-                        <h4>Wybierz Linie</h4>
-                        <select class="form-control input-sm" ng-options="busLine.id as busLine.number for busLine in vm.busLines" ng-model="vm.selectedBusLine">
-                            <option value="" disabled selected style="display: none;"> Wybierz linie z listy</option>
-                        </select> <br/>                        
-                    </form>
-                    
-                    <form ng-init="vm.searchedConnection.searchingType='distance'">
-                        <h4>Wyszukaj połączenie miedzy przystankami</h4>
-                        <select class="form-control input-sm" ng-options="busStop as busStop.id+' - '+busStop.name for busStop in vm.busStops" ng-model="vm.searchedConnection.busStopFrom">
-                            <option value="" disabled selected style="display: none;"> Wybierz przystanek początkowy</option>
-                        </select>
-                        <select class="form-control input-sm" ng-options="busStop as busStop.id+' - '+busStop.name for busStop in vm.busStops" ng-model="vm.searchedConnection.busStopTo">
-                            <option value="" disabled selected style="display: none;"> Wybierz przystanek końcowy</option>
-                        </select>
-                        
-                        <label>
-                          <input type="radio" ng-model="vm.searchedConnection.searchingType" value="distance">Najkrótszy dystans
-                        </label><br/>
-                        <label>
-                          <input type="radio" ng-model="vm.searchedConnection.searchingType" value="stops" checked="checked">Najmniejsza ilosc przystanków
-                        </label><br/> 
-                          
-                        <button class="btn btn-primary" ng-click="vm.searchedConnection.busStopFrom && vm.searchedConnection.busStopTo ? vm.findConnection() : null" >Szukaj polaczenia</button>
-
-                        <div ng-if="vm.busStopConnectionExist === false" class="alert alert-success fade in">
-                          <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                          <strong>Success!</strong> Udalo się utworzyć połączenie
-                        </div>   
-                        <div ng-if="vm.busStopConnectionExist === true" class="alert alert-danger fade in">
-                          <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                          <strong>Błąd!</strong> Wybrane połączenie już istnieje ! 
-                        </div>                          
-                    </form>                    
-                    
-                    <form>
-                        <h4>Dodaj połączenie miedzy przystankami</h4>
-                        <select class="form-control input-sm" ng-options="busStop as busStop.id+' - '+busStop.name for busStop in vm.busStops" ng-model="vm.newBusStopConnection.busStopFrom">
-                            <option value="" disabled selected style="display: none;"> Wybierz przystanek początkowy</option>
-                        </select>
-                        <select class="form-control input-sm" ng-options="busStop as busStop.id+' - '+busStop.name for busStop in vm.busStops" ng-model="vm.newBusStopConnection.busStopTo">
-                            <option value="" disabled selected style="display: none;"> Wybierz przystanek końcowy</option>
-                        </select>
-                        <button class="btn btn-primary" ng-click="vm.createNewBusStopConnection()" >Create Bus Stop Connection</button>
-
-                        <div ng-if="vm.busStopConnectionExist === false" class="alert alert-success fade in">
-                          <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                          <strong>Success!</strong> Udalo się utworzyć połączenie
-                        </div>   
-                        <div ng-if="vm.busStopConnectionExist === true" class="alert alert-danger fade in">
-                          <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                          <strong>Błąd!</strong> Wybrane połączenie już istnieje ! 
-                        </div>                          
-                    </form>
-                    
-                    <form>
-                        <button class="btn btn-primary" ng-click="vm.toggleBusStopCreationAvaliability()" >Create Bus Stop</button>
-                        <div ng-if="vm.busStopCreationAvaliability === true" class="alert alert-info fade in">
-                          <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                          <strong>Informacja : </strong>Aby utworzyć przystanek kliknij w dowolnym miejscu na mapie a nastepnie na utworzony przystanek aby wybrać jego nazwę i kliknij przycisk Save aby go zapisać
-                        </div>                         
-                    </form>
-
-                    <form>
-                        <h4>Dodaj przystanek do linii</h4>
-                        <select class="form-control input-sm" ng-options="busStop as busStop.id+' - '+busStop.name for busStop in vm.busStops" ng-model="vm.addingBusStopToBusLine.busStop" ng-required="true">
-                            <option value="" disabled selected style="display: none;"> Wybierz przystanek</option>
-                        </select>
-                        <select class="form-control input-sm" ng-options="busLine as busLine.id+' - '+busLine.number for busLine in vm.busLines" ng-model="vm.addingBusStopToBusLine.busLine" ng-required="true">
-                            <option value="" disabled selected style="display: none;"> Wybierz linie autobusowa</option>
-                        </select>                   
-                        <button class="btn btn-primary" ng-click="vm.addingBusStopToBusLine.busStop && vm.addingBusStopToBusLine.busLine ? vm.addBusStopToBusLine() : null" >Add Bus Stop to Bus Line</button>
-
-                        <div ng-if="vm.addingBusStopToBusLineAvliability === true" class="alert alert-success fade in">
-                            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                            <strong>Success!</strong> Udalo się dodac linie do przystanku
-                        </div>   
-                        <div ng-if="vm.addingBusStopToBusLineAvliability === false" class="alert alert-danger fade in">
-                            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                            <strong>Błąd!</strong> Ta linia posiada juz ten przystanek !
-                        </div>                         
-                    </form>
-                    
-                    <form>
-                        <h4>Create Bus Line</h4>
-                        <input type="text" class="form-control input-sm" ng-model="vm.newBusLine.number" placeholder="Insert Bus Line Name" required/>
-                        <select name='busLineBusStopFromSelect' class="form-control input-sm" ng-options="busStop as busStop.id+' - '+busStop.name for busStop in vm.busStops" ng-model="vm.newBusLine.busStopFrom"  ng-required="true" >
-                            <option value="" disabled selected style="display: none;"> Wybierz przystanek poczatkowy</option>
-                        </select>
-                        <select name='busLineBusStopToSelect' class="form-control input-sm" ng-options="busStop as busStop.id+' - '+busStop.name for busStop in vm.busStops" ng-model="vm.newBusLine.busStopTo"  ng-required="true" >
-                            <option value="" disabled selected style="display: none;"> Wybierz przystanek koncowy</option>
-                        </select>                  
-                        <button class="btn btn-primary" ng-click="vm.newBusLine.number && vm.newBusLine.busStopFrom && vm.newBusLine.busStopTo ? vm.createBusLine() : null" >Create Bus Line</button>
-
-                        <div ng-if="vm.newBusLineAvailability === true" class="alert alert-success fade in">
-                          <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                          <strong>Success!</strong> Udalo się utworzyc linie autobusowa
-                        </div>   
-                        <div ng-if="vm.newBusLineAvailability === false" class="alert alert-danger fade in">
-                          <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                          <strong>Błąd!</strong> Linia o takiej nazwie juz istnieje!
-                        </div>                         
-                    </form>
-                    
-                    <form>
-                        <h4>Create Bus Line Connection</h4>
-                        <select class="form-control input-sm" ng-options="busLine as busLine.id+' - '+busLine.number for busLine in vm.busLines" ng-model="vm.newBusLineConnection.busLine" ng-required="true">
-                            <option value="" disabled selected style="display: none;"> Wybierz linie autobusowa</option>
-                        </select> 
-                        <select class="form-control input-sm" ng-options="
-                                busStopConnection as busStopConnection.busStopFrom.id+
-                                ' - '+
-                                busStopConnection.busStopFrom.name+
-                                ' - '+
-                                busStopConnection.busStopTo.id+
-                                ' - '+
-                                busStopConnection.busStopTo.name for busStopConnection in vm.busStopConnections" ng-model="vm.newBusLineConnection.busStopConnection"  ng-required="true" >
-                            <option value="" disabled selected style="display: none;"> Wybierz połączenie między przystankami</option>
-                        </select> 
-                        <input type="number" class="form-control input-sm" ng-model="vm.newBusLineConnection.busLineOrder" placeholder="Podaj kolejność połączenia na trasie linii" required/>                        
-                        <button class="btn btn-primary" ng-click="
-                            vm.newBusLineConnection.busLine && 
-                            vm.newBusLineConnection.busStopConnection && 
-                            vm.newBusLineConnection.busLineOrder ? 
-                            vm.createBusLineConnection() : null" >
-                            Create Bus Line Connection
-                        </button>
-
-                        <div ng-if="vm.busLineConnectionExist === false" class="alert alert-success fade in">
-                          <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                          <strong>Success!</strong> Udalo się utworzyc polaczenie linii autobusowej
-                        </div>   
-                        <div ng-if="vm.busLineConnectionExist === true" class="alert alert-danger fade in">
-                          <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                          <strong>Błąd!</strong> Ta linia posiada juz to polaczenie lub numer kolejnosci polaczenia!
-                        </div>                         
-                    </form>                    
-
+    <body>
+        <div class="navbar-wrapper">
+            <div class="container">
+                <nav class="navbar navbar-inverse navbar-fixed-top">
                     <div class="container">
-                        <h2>Bus Stops</h2> 
-                        <table class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Id</th>
-                                    <th>Name</th>
-                                    <th>Latitide</th>
-                                    <th>Longitude</th>
-                                    <th>Bus Lines</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr  ng-repeat="busStop in vm.busStops">
-                                    <td>{{busStop.id}}</td>
-                                    <td>{{busStop.name}}</td>
-                                    <td>{{busStop.position[0]}}</td>
-                                    <td>{{busStop.position[0]}}</td> 
-                                    <td><p ng-repeat="busStopBusLine in busStop.busLines">{{busStopBusLine.number}}</p></td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <div class="navbar-header">
+                            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                                <span class="sr-only">Toggle navigation</span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                            </button>
+                            <a class="navbar-brand" href="#/findConnection">Bus Finder</a>
+                        </div>
+                        <div id="navbar" class="navbar-collapse collapse">
+                            <ul class="nav navbar-nav">
+                                <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Finder <span class="caret"></span></a>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="#/findBusLine">Find Bus Line</a></li>
+                                        <li><a href="#/findBusStop">Find Bus Stop</a></li>
+                                        <li><a href="#/findConnection">Find Connection</a></li>
+                                    </ul>
+                                </li>
+                                <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Manager <span class="caret"></span></a>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="#/manageBusStops">Bus Stops</a></li>
+                                        <li><a href="#/manageBusStopConnections">Bus Stop Connections</a></li>
+                                        <li><a href="#/manageBusLines">Bus Lines</a></li>
+                                        <li><a href="#/manageBusLineConnections">Bus Line Connections</a></li>
+                                        <li><a href="#/manageTimetables">Timetable</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div><!--/.nav-collapse -->
+                    </div>
+                </nav>
+                <div ng-controller="MapController as vm">
+
+                    <div class="jumbotron" style="margin-bottom: 10px; margin-top: 60px; padding-top: 20px; padding-bottom: 10px;">
+                        <div class="container">
+                            <div ui-view></div> 
+                            <div ng-if="vm.connectionExist == true">
+                                <div class="panel panel-default">
+                                    <div class="container">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>Lp</th>
+                                                    <th>From</th>
+                                                    <th>To</th>
+                                                    <th>Bus Line</th>
+                                                    <th>Time</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr  ng-repeat="travelDirection in vm.travelDirections">
+                                                    <td>{{$index+1}}</td>
+                                                    <td>{{travelDirection.from.name}} <img src="images/pin.png" alt="" ng-click="vm.showDetail(null, travelDirection.from)" /> </td>
+                                                    <td>{{travelDirection.to.name}}  <img src="images/pin.png" alt=""  ng-click="vm.showDetail(null, travelDirection.to)"/>  </td>
+                                                    <td>{{travelDirection.busLine}}</td>
+                                                    <td>
+                                                        <a ng-if="travelDirection.hour!=null">{{travelDirection.hour}}:{{travelDirection.minute}}</a>
+                                                        <a ng-if="travelDirection.hour==null">Brak rozkładu dla tej linii na tym przystanku</a>
+                                                    </td> 
+                                                </tr>
+
+                                            </tbody>
+                                        </table>
+                                    </div> 
+                                </div>                                    
+                            </div>
+                            <div ng-if="vm.connectionExist == false">
+                                <div class="alert alert-warning" role="alert">Niestety nie istnieje połączenie o podanych parametrach</div>
+                            </div>
+
+                        </div>
+                    </div>
+                    
+                    <div id="map">
+                        <ng-map class="map" center="50.87482, 20.62842" zoom="14" on-click="vm.addMarker()">
+                            <marker id='{{busStop.id}}' 
+                                    position="{{busStop.position}}"
+                                    ng-repeat="busStop in vm.busStops"
+                                    on-click="vm.showDetail(busStop)"
+                                    icon='images/bus.png'
+                                    animation="Animation.DROP">
+                            </marker>
+
+                            <marker ng-if="vm.newBusStop.position" id='{{vm.newBusStop.id}}' 
+                                    position="{{vm.newBusStop.position}}"
+                                    on-click="vm.showNewBusStopDetail()"
+                                    on-dragend="vm.changePosition()"
+                                    icon='images/bus.png'
+                                    draggable="true">
+                            </marker>                    
+
+                            <info-window id="infoWindowId" >
+                                <div ng-non-bindable>
+
+                                    <div class="jumbotron" style="margin: 5px; padding: 5px; width: 200px;">
+                                        <div class="container">
+                                            <h4><span class="label label-danger">Przystanek nr {{vm.active.id}} </span></h4><b>{{vm.active.name}}</b><br/>
+                                        </div>
+                                    </div>                                     
+                                    
+                                    <div class="jumbotron" style="margin: 5px; padding: 5px; width: 200px;">
+                                        <div class="container">
+                                            <h4><span class="label label-default">Linie : </span></h4><h4><span ng-repeat="busStopBusLine in vm.active.busLines"><span class="label label-primary" margin-left="10px">{{busStopBusLine.number}}</span> </span></h4>
+                                        </div>
+                                    </div>                                      
+                                    
+                                    <div class="jumbotron" style="margin:auto; padding: 5px; width: 200px;">
+                                        <div class="container">
+                                            <h4><span class="label label-default">Najblizsze odjazdy : </span></h4>
+                                            <h4>
+                                                <span class="label label-warning">Linia</span> <span class="label label-warning">Odjazd</span>
+                                                    <span ng-if="vm.searchingMode == 'busStop'">
+                                                        <img src="images/refresh.png" alt="" ng-click="vm.findAvailableTimetablesForSearchedBusStop()" />
+                                                    </span>
+                                                    <span ng-if="vm.searchingMode == 'busLine'">
+                                                        <img src="images/refresh.png" alt="" ng-click="vm.findAvailableTimetablesForSelectedBusLineBusStop()" />
+                                                    </span>                                        
+                                            </h4>
+                                            <div ng-repeat="timetable in vm.searchedBusStopTimetables | orderBy: ['time_hour','time_minute']">
+
+                                                <h4><span class="label label-primary"  width="200px">- {{timetable.busLine.number}} -</span> <span class="label label-success">{{timetable.time_hour}}:{{timetable.time_minute}}</span></h4>
+
+                                            </div> 
+
+                                        </div>
+                                    </div>                                    
+
+                                    
+
+                                    
+                                </div>
+                            </info-window>
+
+                            <info-window ng-if="vm.newBusStop.position" id="newBusStopInfoWindow" visible-on-marker="{{vm.newBusStop.id}}">
+                                <div ng-non-bindable="">
+                                    <div class="input-group" style="width: 400px;">
+                                        <input type="text" class="form-control" ng-model="vm.newBusStop.name"  placeholder="Bus Stop Name" required="true">
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-primary" type="button" ng-click=" vm.newBusStop.name ? vm.saveNewBusStop() : null" >Save</button>
+                                        </span>
+                                    </div><!-- /input-group -->
+                                </div>
+                            </info-window>                    
+
+                            <shape id='{{busStopConnection.id}}' name="polyline" stroke-opacity="1.0"  ng-repeat="busStopConnection in vm.busStopConnections" 
+                                   path="[ [{{busStopConnection.busStopFrom.latitude}}, {{busStopConnection.busStopFrom.longitude}}], [{{busStopConnection.busStopTo.latitude}}, {{busStopConnection.busStopTo.longitude}}] ]"
+                                   stroke-color='{{busStopConnection.strokeColor}}'
+                                   stroke-weight="{{busStopConnection.strokeWeight}}" geodesic="true">
+                            </shape>                    
+                        </ng-map>
                     </div>
 
-                    <div class="container">
-                        <h2>Bus Stop Connections</h2> 
-                        <table class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Id</th>
-                                    <th>Distance</th>
-                                    <th>Bus Stop From</th>
-                                    <th>Bus Stop To</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr  ng-repeat= "busStopConnection in vm.busStopConnections">
-                                    <td>{{busStopConnection.id}}</td>
-                                    <td>{{busStopConnection.distance}}</td>
-                                    <td>{{busStopConnection.busStopFrom.name}} {{busStopConnection.busStopFrom.latitude}}</td>
-                                    <td>{{busStopConnection.busStopTo.name}} {{busStopConnection.busStopFrom.longitude}}</td> 
-                                </tr>
-                            </tbody>
-                        </table>
+                    <div  style="background-color: #C0C0C0; margin-bottom: 10px; margin-top: 10px; padding-top: 25px; padding-bottom: 3px;">
+                        <footer>
+                            <p><center>© 2015 Bus Finder</center></p>
+                        </footer>
                     </div>
-
-                    <div class="container">
-                        <h2>Bus Lines</h2> 
-                        <table class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Id</th>
-                                    <th>Name</th>
-                                    <th>Bus Stop From</th>
-                                    <th>Bus Stop To</th>
-                                    <th>Bus Line Bus Stops</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr  ng-repeat= "busLine in vm.busLines">
-                                    <td>{{busLine.id}}</td>
-                                    <td>{{busLine.number}}</td>
-                                    <td>{{busLine.busStopFrom.name}}</td>
-                                    <td>{{busLine.busStopTo.name}}</td> 
-                                    <td><p ng-repeat="busLineBusStop in busLine.busStops">{{busLineBusStop.name}}</p></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>     
-
-                    <div class="container">
-                        <h2>Bus Line Connections</h2> 
-                        <table class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Id</th>
-                                    <th>Bus Line</th>
-                                    <th>Bus Stop Connection</th>
-                                    <th>Bus Line Order</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr  ng-repeat= "busLineConnection in vm.busLineConnections">
-                                    <td>{{busLineConnection.id}}</td>
-                                    <td>{{busLineConnection.busLine.number}}</td>
-                                    <td>{{busLineConnection.busStopConnection.busStopFrom.name}} - {{busLineConnection.busStopConnection.busStopTo.name}}</td>
-                                    <td>{{busLineConnection.busLineOrder}}</td> 
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>  
-
+                
                 </div>
-
             </div>
-            <div id="map">
-                <ng-map class="map" center="50.87482, 20.62842" zoom="14" on-click="vm.addMarker()">
-                    <marker id='{{busStop.id}}' 
-                            position="{{busStop.position}}"
-                            ng-repeat="busStop in vm.busStops"
-                            on-click="vm.showDetail(busStop)"
-                            icon='images/bus.png'
-                            animation="Animation.DROP">
-                    </marker>
-                    
-                    <marker ng-if="vm.newBusStop.position" id='{{vm.newBusStop.id}}' 
-                            position="{{vm.newBusStop.position}}"
-                            on-click="vm.showNewBusStopDetail()"
-                            on-dragend="vm.changePosition()"
-                            icon='images/bus.png'
-                            draggable="true">
-                    </marker>                    
-
-                    <info-window id="infoWindowId">
-                        <div ng-non-bindable="">
-                            Przystanek : {{vm.active.id}} - {{vm.active.name}}<br/>
-                            Linie : <a ng-repeat="busStopBusLine in vm.active.busLines">{{busStopBusLine.number}} </a><br/>
-                            <a href="#" ng-click="vm.clicked()">Click Here</a>
-                        </div>
-                    </info-window>
-                    
-                    <info-window id="newBusStopInfoWindow">
-                        <div ng-non-bindable="">
-                            <div class="input-group" style="width: 400px;">
-                              <input type="text" class="form-control" ng-model="vm.newBusStop.name"  placeholder="Bus Stop Name" required="true">
-                              <span class="input-group-btn">
-                                <button class="btn btn-primary" type="button" ng-click=" vm.newBusStop.name ? vm.saveNewBusStop() : null" >Save</button>
-                              </span>
-                            </div><!-- /input-group -->
-                        </div>
-                    </info-window>                    
-
-                    <shape id='{{busStopConnection.id}}' name="polyline" stroke-opacity="1.0"  ng-repeat="busStopConnection in vm.busStopConnections" 
-                           path="[ [{{busStopConnection.busStopFrom.latitude}}, {{busStopConnection.busStopFrom.longitude}}], [{{busStopConnection.busStopTo.latitude}}, {{busStopConnection.busStopTo.longitude}}] ]"
-                           stroke-color='{{busStopConnection.strokeColor}}'
-                           stroke-weight="{{busStopConnection.strokeWeight}}" geodesic="true">
-                    </shape>                    
-                </ng-map>
-            </div>
-
         </div>
-
     </body>
-
-
-
-
 </html>

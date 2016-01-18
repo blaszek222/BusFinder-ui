@@ -1,0 +1,56 @@
+{{vm.travelDirections = null}}
+<form>
+    <h4>Create Bus Line</h4>
+    <input type="text" class="form-control input-sm" ng-model="vm.newBusLine.number" placeholder="Insert Bus Line Name" required/>
+    <select name='busLineBusStopFromSelect' class="form-control input-sm" ng-options="busStop as busStop.id+' - '+busStop.name for busStop in vm.busStops" ng-model="vm.newBusLine.busStopFrom"  ng-required="true" >
+        <option value="" disabled selected style="display: none;"> Wybierz przystanek poczatkowy</option>
+    </select>
+    <select name='busLineBusStopToSelect' class="form-control input-sm" ng-options="busStop as busStop.id+' - '+busStop.name for busStop in vm.busStops" ng-model="vm.newBusLine.busStopTo"  ng-required="true" >
+        <option value="" disabled selected style="display: none;"> Wybierz przystanek koncowy</option>
+    </select>                  
+    <button class="btn btn-primary" ng-click="vm.newBusLine.number && vm.newBusLine.busStopFrom && vm.newBusLine.busStopTo ? vm.createBusLine() : null" >Create Bus Line</button>                        
+</form>
+
+<form>
+    <h4>Dodaj przystanek do linii</h4>
+    <select class="form-control input-sm" ng-options="busStop as busStop.id+' - '+busStop.name for busStop in vm.busStops" ng-model="vm.addingBusStopToBusLine.busStop" ng-required="true">
+        <option value="" disabled selected style="display: none;"> Wybierz przystanek</option>
+    </select>
+    <select class="form-control input-sm" ng-options="busLine as busLine.id+' - '+busLine.number for busLine in vm.busLines" ng-model="vm.addingBusStopToBusLine.busLine" ng-required="true">
+        <option value="" disabled selected style="display: none;"> Wybierz linie autobusowa</option>
+    </select>                   
+    <button class="btn btn-primary" ng-click="vm.addingBusStopToBusLine.busStop && vm.addingBusStopToBusLine.busLine ? vm.addBusStopToBusLine() : null" >Add Bus Stop to Bus Line</button>                         
+</form> 
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h4 class="panel-title">
+            <a data-toggle="collapse" data-target="#collapse1">Bus Lines List</a>
+        </h4>
+    </div>
+    <div id="collapse1" class="panel-collapse collapse">
+        <div class="container">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Name</th>
+                        <th>Bus Stop From</th>
+                        <th>Bus Stop To</th>
+                        <th>Bus Line Bus Stops</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr  ng-repeat= "busLine in vm.busLines">
+                        <td>{{busLine.id}}</td>
+                        <td>{{busLine.number}}</td>
+                        <td>{{busLine.busStopFrom.name}}</td>
+                        <td>{{busLine.busStopTo.name}}</td> 
+                        <td><p ng-repeat="busLineBusStop in busLine.busStops">{{busLineBusStop.name}}</p></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div> 
+    </div>
+</div>
+

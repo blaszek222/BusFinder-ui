@@ -1,0 +1,12 @@
+
+<form ng-init="vm.searchingMode='busLine'">
+    <h4>Wybierz Linie</h4>
+    <select class="form-control input-sm" ng-options="busLine.id as busLine.number for busLine in vm.busLines" ng-model="vm.selectedBusLine">
+        <option value="" disabled selected style="display: none;"> Wybierz linie z listy</option>
+    </select> <br/>                        
+</form>
+<select name='findBusStop' class="form-control input-sm" ng-options="busStop as busStop.id+' - '+busStop.name for busStop in vm.searchedBusLineBusStops" ng-model="vm.selectedBusLineBusStop"  ng-required="true" >
+    <option value="" disabled selected style="display: none;"> Wybierz przystanek z listy</option>
+</select>
+<br>
+<div class="alert alert-info" role="alert">Wybierz z listy linię autobusową a nastepnie przystanek lub kliknij odpowiedni na mapie</div>

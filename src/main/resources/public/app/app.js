@@ -3,7 +3,9 @@ var busFinderApp = angular.module('busFinderApp', [
     'ui.router',
     'services',
     'controllers',
-    'ngMap'
+    'ngMap',
+    'growlNotifications',
+    'ngAnimate'
 //    'filters',
 //    'dndLists'
 ]);

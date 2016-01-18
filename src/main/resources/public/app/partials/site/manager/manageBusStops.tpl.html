@@ -1,0 +1,36 @@
+{{vm.travelDirections = null}}
+<form>
+    <button class="btn btn-primary" ng-click="vm.toggleBusStopCreationAvaliability();">Create Bus Stop</button>                        
+</form>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h4 class="panel-title">
+            <a data-toggle="collapse" data-target="#collapse1"><b>Bus Stops List</b></a>
+        </h4>
+    </div>
+    <div id="collapse1" class="panel-collapse collapse">
+        <div class="container">
+
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Name</th>
+                        <th>Latitide</th>
+                        <th>Longitude</th>
+                        <th>Bus Lines</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr  ng-repeat="busStop in vm.busStops">
+                        <td>{{busStop.id}}</td>
+                        <td>{{busStop.name}}</td>
+                        <td>{{busStop.position[0]}}</td>
+                        <td>{{busStop.position[0]}}</td> 
+                        <td><p ng-repeat="busStopBusLine in busStop.busLines">{{busStopBusLine.number}}</p></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

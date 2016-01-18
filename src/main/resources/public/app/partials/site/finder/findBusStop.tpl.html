@@ -1,0 +1,6 @@
+
+<select ng-init="vm.searchingMode='busStop'" name='findBusStop' class="form-control input-sm" ng-options="busStop as busStop.id+' - '+busStop.name for busStop in vm.busStops" ng-model="vm.searchedBusStop"  ng-required="true" >
+    <option value="" disabled selected style="display: none;"> Wybierz przystanek z listy</option>
+</select>
+<br>
+<div class="alert alert-info" role="alert">Wybierz przystanek z listy lub kliknij odpowiedni na mapie</div>

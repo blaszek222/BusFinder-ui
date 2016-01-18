@@ -1,0 +1,57 @@
+{{vm.travelDirections = null}}
+
+<form>
+    <h4>Create Bus Line Connection</h4>
+    <select class="form-control input-sm" ng-options="busLine as busLine.id+' - '+busLine.number for busLine in vm.busLines" ng-model="vm.newBusLineConnection.busLine" ng-required="true">
+        <option value="" disabled selected style="display: none;"> Wybierz linie autobusowa</option>
+    </select> 
+    <select class="form-control input-sm" ng-options="
+            busStopConnection as busStopConnection.busStopFrom.id+
+            ' - '+
+            busStopConnection.busStopFrom.name+
+            ' - '+
+            busStopConnection.busStopTo.id+
+            ' - '+
+            busStopConnection.busStopTo.name for busStopConnection in vm.busStopConnections" ng-model="vm.newBusLineConnection.busStopConnection"  ng-required="true" >
+        <option value="" disabled selected style="display: none;"> Wybierz połączenie między przystankami</option>
+    </select> 
+    <input type="number" class="form-control input-sm" ng-model="vm.newBusLineConnection.busLineOrder" placeholder="Podaj kolejność połączenia na trasie linii" required/>                        
+    <button class="btn btn-primary" ng-click="
+                                    vm.newBusLineConnection.busLine &&
+                                            vm.newBusLineConnection.busStopConnection &&
+                                            vm.newBusLineConnection.busLineOrder ?
+                                            vm.createBusLineConnection() : null" >
+        Create Bus Line Connection
+    </button>                         
+</form>   
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h4 class="panel-title">
+            <a data-toggle="collapse" data-target="#collapse1">Bus Line Connections List</a>
+        </h4>
+    </div>
+    <div id="collapse1" class="panel-collapse collapse">
+        <div class="container">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Bus Line</th>
+                        <th>Bus Stop Connection</th>
+                        <th>Bus Line Order</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr  ng-repeat= "busLineConnection in vm.busLineConnections">
+                        <td>{{busLineConnection.id}}</td>
+                        <td>{{busLineConnection.busLine.number}}</td>
+                        <td>{{busLineConnection.busStopConnection.busStopFrom.name}} - {{busLineConnection.busStopConnection.busStopTo.name}}</td>
+                        <td>{{busLineConnection.busLineOrder}}</td> 
+                    </tr>
+                </tbody>
+            </table>
+        </div>  
+    </div>
+</div>
+
